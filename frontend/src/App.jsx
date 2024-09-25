@@ -4,6 +4,7 @@ import {
   createRoutesFromElements,
   RouterProvider,
 } from "react-router-dom";
+import { useState } from "react";
 import MainLayout from "./layouts/MainLayout";
 import HomePage from "./pages/HomePage";
 import JobsPage from "./pages/JobsPage";
@@ -15,7 +16,9 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 
 const App = () => {
-  // Add New Job
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    JSON.parse(sessionStorage.getItem("user")) || false
+  );
   const addJob = async (newJob) => {
     const res = await fetch("/api/jobs", {
       method: "POST",
@@ -53,7 +56,10 @@ const App = () => {
         <Route index element={<HomePage />} />
         <Route path="/jobs" element={<JobsPage />} />
         <Route path="/add-job" element={<AddJobPage addJobSubmit={addJob} />} />
-        <Route path="/login" element={<Login />} />
+        <Route
+          path="/login"
+          element={<Login setIsAuthenticated={setIsAuthenticated} />}
+        />
         <Route path="/signup" element={<Signup />} />
         <Route
           path="/edit-job/:id"
