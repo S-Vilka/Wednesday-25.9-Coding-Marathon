@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const { createJob, getAllJobs, getJobById, updateJobById, deleteJobById } = require('../controllers/jobControllers');
+const requireAuth = require('../middleware/requireAuth');
+
 
 // Create a new job
-router.post('/', async (req, res) => {
+router.post('/', requireAuth, async (req, res) => {
   try {
     const jobData = req.body; // jobData comes from the request body
     const newJob = await createJob(jobData);
@@ -34,7 +36,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Update a job by ID
-router.put('/:id', async (req, res) => {
+router.put('/:id', requireAuth, async (req, res) => {
   try {
     const updateData = req.body;
     const updatedJob = await updateJobById(req.params.id, updateData);
@@ -45,7 +47,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete a job by ID
-router.delete('/:id', async (req, res) => {
+router.delete('/:id',requireAuth, async (req, res) => {
   try {
     await deleteJobById(req.params.id);
     res.status(204).send();

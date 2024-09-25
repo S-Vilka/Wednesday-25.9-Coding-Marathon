@@ -1,4 +1,5 @@
 const Job = require('../models/jobModel');
+const requireAuth = require('../middleware/requireAuth')
 
 const createJob = async (jobData) => {
     try {
