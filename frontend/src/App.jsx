@@ -19,35 +19,42 @@ const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(
     JSON.parse(sessionStorage.getItem("user")) || false
   );
+
   const addJob = async (newJob) => {
+    const token = JSON.parse(sessionStorage.getItem("user")).token;
     const res = await fetch("/api/jobs", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(newJob),
     });
-    return;
+    return res.json();
   };
 
-  // Delete Job
   const deleteJob = async (id) => {
+    const token = JSON.parse(sessionStorage.getItem("user")).token;
     const res = await fetch(`/api/jobs/${id}`, {
       method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
-    return;
+    return res.json();
   };
 
-  // Update Job
   const updateJob = async (job) => {
+    const token = JSON.parse(sessionStorage.getItem("user")).token;
     const res = await fetch(`/api/jobs/${job.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(job),
     });
-    return;
+    return res.json();
   };
 
   const router = createBrowserRouter(
@@ -60,7 +67,10 @@ const App = () => {
           path="/login"
           element={<Login setIsAuthenticated={setIsAuthenticated} />}
         />
-        <Route path="/signup" element={<Signup />} />
+        <Route
+          path="/signup"
+          element={<Signup setIsAuthenticated={setIsAuthenticated} />}
+        />
         <Route
           path="/edit-job/:id"
           element={<EditJobPage updateJobSubmit={updateJob} />}

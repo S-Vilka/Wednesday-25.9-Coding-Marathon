@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import useSignup from "../hooks/useSignup";
 
 const Signup = () => {
+  const { handleSignup, error } = useSignup();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,7 +15,7 @@ const Signup = () => {
 
   const navigate = useNavigate();
 
-  const submitForm = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const signupData = {
@@ -28,7 +29,7 @@ const Signup = () => {
     };
 
     try {
-      const response = await fetch("/api/signup", {
+      const response = await fetch("/api/users/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -36,16 +37,17 @@ const Signup = () => {
         body: JSON.stringify(signupData),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to sign up");
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success("User registered successfully");
+        navigate("/login");
+      } else {
+        toast.error(data.error || "Registration failed");
       }
-
-      const result = await response.json();
-      toast.success(result.message || "User added Successfully");
-
-      navigate("/jobs");
     } catch (error) {
-      toast.error(error.message || "An error occurred. Please try again.");
+      toast.error("An error occurred during registration");
+      console.error("Error:", error);
     }
   };
 
@@ -53,7 +55,7 @@ const Signup = () => {
     <section className="bg-indigo-50">
       <div className="container m-auto max-w-2xl py-24">
         <div className="bg-white px-6 py-8 mb-4 shadow-md rounded-md border m-4 md:m-0">
-          <form onSubmit={submitForm}>
+          <form onSubmit={handleSubmit}>
             <h2 className="text-3xl text-center font-semibold mb-6">Signup</h2>
 
             <div className="mb-4">

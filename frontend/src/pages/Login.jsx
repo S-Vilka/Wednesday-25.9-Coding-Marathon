@@ -3,12 +3,12 @@ import useLogin from "../hooks/useLogin";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const Login = ({ loginSubmit }) => {
+const Login = ({ setIsAuthenticated }) => {
+  const { handleLogin, error } = useLogin(setIsAuthenticated);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
-  const { handleLogin, error } = useLogin(setIsAuthenticated);
 
   const submitForm = async (e) => {
     e.preventDefault();

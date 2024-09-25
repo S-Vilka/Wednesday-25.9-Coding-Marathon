@@ -5,32 +5,23 @@ const useSignup = (setIsAuthenticated) => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const handleSignup = async (email, password) => {
+  const handleSignup = async (signupData) => {
     try {
       const response = await fetch("/api/users/signup", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(signupData),
       });
-
+      const data = await response.json();
       if (response.ok) {
-        const user = await response.json();
-        sessionStorage.setItem("user", JSON.stringify(user));
-        console.log("User signed up successfully!");
-        setIsAuthenticated(true);
-        navigate("/");
+        navigate("/login");
       } else {
-        const errorData = await response.json();
-        setError(errorData.error || "Signup failed");
+        setError(data.error || "Signup failed");
       }
     } catch (error) {
-      console.error("Error during signup:", error);
-      setError("An unexpected error occurred");
+      setError("An error occurred during signup");
     }
   };
-
   return {
     error,
     handleSignup,
