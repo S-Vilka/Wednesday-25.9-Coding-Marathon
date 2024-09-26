@@ -1,11 +1,16 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { createJob, getAllJobs, getJobById, updateJobById, deleteJobById } = require('../controllers/jobControllers');
-const requireAuth = require('../middleware/requireAuth');
-
+const {
+  createJob,
+  getAllJobs,
+  getJobById,
+  updateJobById,
+  deleteJobById,
+} = require("../controllers/jobControllers");
+const requireAuth = require("../middleware/requireAuth");
 
 // Create a new job
-router.post('/', requireAuth, async (req, res) => {
+router.post("/", requireAuth, async (req, res) => {
   try {
     const jobData = req.body; // jobData comes from the request body
     const newJob = await createJob(jobData);
@@ -16,9 +21,10 @@ router.post('/', requireAuth, async (req, res) => {
 });
 
 // Get all jobs
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    const jobs = await getAllJobs();
+    const limit = parseInt(req.query._limit);
+    const jobs = await getAllJobs(limit);
     res.status(200).json(jobs);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -26,7 +32,7 @@ router.get('/', async (req, res) => {
 });
 
 // Get a job by ID
-router.get('/:id', async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
     const job = await getJobById(req.params.id);
     res.status(200).json(job);
@@ -36,7 +42,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Update a job by ID
-router.put('/:id', requireAuth, async (req, res) => {
+router.put("/:id", requireAuth, async (req, res) => {
   try {
     const updateData = req.body;
     const updatedJob = await updateJobById(req.params.id, updateData);
@@ -47,7 +53,7 @@ router.put('/:id', requireAuth, async (req, res) => {
 });
 
 // Delete a job by ID
-router.delete('/:id',requireAuth, async (req, res) => {
+router.delete("/:id", requireAuth, async (req, res) => {
   try {
     await deleteJobById(req.params.id);
     res.status(204).send();

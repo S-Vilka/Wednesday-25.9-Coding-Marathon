@@ -41,7 +41,10 @@ const App = () => {
         Authorization: `Bearer ${token}`,
       },
     });
-    return res.json();
+    if (!res.ok) {
+      throw new Error("Failed to delete job");
+    }
+    return { success: true };
   };
 
   const updateJob = async (job) => {

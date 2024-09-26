@@ -18,7 +18,7 @@ const JobPage = ({ deleteJob }) => {
     try {
       await deleteJob(jobId);
       toast.success("Job deleted successfully");
-      navigate("/jobs");
+      setTimeout(() => navigate("/jobs"), 100);
     } catch (error) {
       toast.error("Failed to delete job");
       console.error("Error deleting job:", error);
