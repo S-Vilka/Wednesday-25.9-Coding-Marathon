@@ -1,4 +1,5 @@
-import { useParams, useLoaderData, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import useFetch from "../hooks/useFetch";
 import { FaArrowLeft, FaMapMarker } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -6,7 +7,11 @@ import { toast } from "react-toastify";
 const JobPage = ({ deleteJob }) => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const job = useLoaderData();
+  const { data: job, loading, error } = useFetch(`/api/jobs/${id}`);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+  if (!job) return <div>No job found</div>;
 
   const onDeleteClick = async (jobId) => {
     const confirm = window.confirm(
@@ -114,10 +119,4 @@ const JobPage = ({ deleteJob }) => {
   );
 };
 
-const jobLoader = async ({ params }) => {
-  const res = await fetch(`/api/jobs/${params.id}`);
-  const data = await res.json();
-  return data;
-};
-
-export { JobPage as default, jobLoader };
+export default JobPage;
